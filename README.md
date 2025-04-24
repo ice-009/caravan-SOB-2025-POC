@@ -19,7 +19,7 @@ The result will be a more secure, informed, and user-friendly Caravan experience
 # What You’ll Find in This Repository
 The repo is organized to give a clear picture of both the research and the implementation process:
 
-- **`docs/`**: Technical deep dives
+- [**`docs/`**](./docs): Technical deep dives
 
   - [`overview.md`](./docs/overview.md): This document explains how the wallet-activity generator works under the hood, providing insights into the simulation of wallet activity.
 
