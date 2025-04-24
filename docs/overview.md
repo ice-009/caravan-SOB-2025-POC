@@ -265,4 +265,50 @@ weightedWasteScore(history: FeeRatePercentile[]): number {
 }
 ```
 
+## 🔄 Metrics Component Lifecycle
+
+To extend or add new analysis modules in Caravan Health—whether privacy, waste, or entirely new dimensions—you’ll follow this consistent lifecycle:
+
+1. **Initialization**  
+   - **Constructor** accepts raw data sources: transaction history, UTXO sets, fee‐rate percentiles, network parameters, etc.  
+   - Internal data structures (maps, caches) are created for fast lookup.
+
+2. **Data Ingestion & Validation**  
+   - Wallet data is loaded from the simulator or live node.  
+   - Inputs are validated (e.g. checking all UTXOs belong to known addresses).
+
+3. **Metric Computation**  
+   - The component’s core method (e.g. `getTopologyScore()`, `relativeFeesScore()`) is invoked over each transaction or UTXO.  
+   - Intermediate values are cached to avoid recomputation in bulk analyses.
+
+4. **Aggregation & Scoring**  
+   - Individual transaction/UTXO scores are combined into a single metric (e.g. MTPS, WPS, WWS).  
+   - Weighting factors are applied and normalized to the expected range [0–1].
+
+5. **API Exposure**  
+   - Computed scores and raw sub‐metric values are exposed via REST endpoints (`/health/privacy`, `/health/waste`).  
+   - Endpoints accept query parameters for network, address type, time ranges, etc.
+
+6. **UI Rendering**  
+   - React components fetch the JSON payloads and render:  
+     - **Scorecards** (Privacy & Waste)  
+     - **Treemap** (UTXO explorer)  
+     - **Charts** (time‐series of historical scores)  
+     - **Transaction Panel** (per‐tx topology & waste breakdown)
+
+7. **User Interaction & Update**  
+   - On user actions (filtering time windows, selecting different wallets, changing coin‐selection strategies), the UI re‐requests updated metrics.  
+   - Components highlight changes (e.g. hover to show raw sub‐scores, drag‐to‐compare multiple wallets).
+
+8. **Persistence & Export**  
+   - Users can export full reports (JSON, CSV) or snapshot images of dashboards.  
+   - Session settings (selected metrics, date ranges) are saved in local storage or user profile.
+
+9. **Extension**  
+   - **New Metric:** subclass `WalletMetrics`, implement `compute()` and any helper methods.  
+   - **Register:** add to the metric‐factory and API router.  
+   - **Visualize:** create or update a React component, wire it to your new endpoint, and add chart or scorecard layout.  
+   - **Document:** update `docs/coin-selection.md` or `docs/health-api.md` with definitions, formulas, and expected ranges.
+
+--- 
 
