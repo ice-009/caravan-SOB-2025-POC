@@ -30,56 +30,151 @@ This package works alongside the Caravan Bitcoin multisig coordinator to provide
 - UTXO explorer with clustering visualization
 - Transaction analysis panel
 
+## UTXO Model
+Bitcoin doesn't use an account-based system like traditional banking. Instead, it uses the UTXO (Unspent Transaction Output) model:
+Each transaction consumes previous transaction outputs as inputs
+Each transaction creates new outputs that can be spent in future transactions
+Your wallet's "balance" is the sum of all UTXOs you control
 
-## 📋 Usage
+![UTXO Model](../images/btc-utxo-model.png)
 
-### Basic Usage
+### Fee Efficiency Concerns
+Bitcoin users pay fees to get their transactions included in blocks. Several factors affect fee efficiency:
+Size of the transaction (number and types of inputs/outputs)
+Current network congestion
+How UTXOs are managed over time
+Inefficient fee management can lead to unnecessary costs, which is the second major focus of Caravan Health.
+Caravan Health Package Structure
+Let's look at the main components of the Caravan Health package:
+![Caravan Heatlh Package Strucutre](../images/caravan-health-pack-struct.png)
 
+The package consists of:
+- WalletMetrics (Base Class) - Common functionality for all metrics
+- PrivacyMetrics - Extends WalletMetrics with privacy-related analysis
+- WasteMetrics - Extends WalletMetrics with fee efficiency analysis
+Now, let's dive into each of these components in detail.
+
+### Privacy Metrics
+The PrivacyMetrics class provides tools to assess the privacy of Bitcoin transactions and wallets. Let's explore each metric:
+Transaction Topology and Spend Types
+Bitcoin transactions can be categorized based on their structure (inputs and outputs), which affects privacy:
+![Topology Types](../images/btc-utxo-model.png)
+
+Let's see a simplified example of how the topology score is calculated:
 ```typescript
-import { PrivacyMetrics, WasteMetrics } from '@caravan/health';
+// Example for a Perfect Spend (1 input, 1 output)
+const spendType = determineSpendType(1, 1); // Returns SpendType.PerfectSpend
+const baseScore = getSpendTypeScore(1, 1);  // Returns 0.5
 
-// Initialize with transactions and UTXOs
-const privacyMetrics = new PrivacyMetrics(transactions, utxos);
-const wasteMetrics = new WasteMetrics(transactions, utxos);
-
-// Calculate wallet health scores
-const privacyScore = privacyMetrics.getWalletPrivacyScore('p2wsh', 'mainnet');
-const wasteScore = wasteMetrics.getWeightedWasteScore(feeRatePercentileHistory);
-
-console.log(`Privacy Score: ${privacyScore}`);
-console.log(`Waste Score: ${wasteScore}`);
+// If this is a self-payment (sending to yourself), a deniability factor can apply
+const finalScore = isSelfPayment ? baseScore * DENIABILITY_FACTOR : baseScore;
+// DENIABILITY_FACTOR = 1.5, so finalScore could be 0.75 if it's a self-payment
 ```
 
-### Transaction Analysis
+### Address Reuse Factor (ARF)
+Address reuse is one of the biggest privacy issues in Bitcoin. Ideally, you should use a new address for every transaction. The Address Reuse Factor measures how much of your wallet's balance is in reused addresses:
+
+![ARF](../images/arf.png)
+
+The formula for Address Reuse Factor is:
+ARF = Amount in reused addresses / Total wallet amount
+Where an address is considered "reused" if it appears more than once in transaction outputs.
+For example:
+If 80% of your funds are in reused addresses, ARF = 0.8 (Very Poor)
+If 50% of your funds are in reused addresses, ARF = 0.5 (Moderate)
+If none of your funds are in reused addresses, ARF = 0 (Very Good)
+The code implementation in Caravan Health analyzes all UTXOs and looks at how many times the corresponding addresses have been used:
 
 ```typescript
-// Analyze a draft transaction before signing
-const txAnalysis = privacyMetrics.analyzeTransaction(draftTransaction);
-
-console.log(`Transaction Topology: ${txAnalysis.spendType}`);
-console.log(`Privacy Score: ${txAnalysis.privacyScore}`);
-console.log(`Potential Waste: ${wasteMetrics.spendWasteAmount(
-  draftTransaction.weight,
-  currentFeeRate,
-  draftTransaction.inputSum,
-  draftTransaction.outputSum,
-  estimatedLongTermFeeRate
-)}`);
+addressReuseFactor(): number {
+  let reusedAmount: number = 0;
+  let totalAmount: number = 0;
+  const utxos = this.utxos;
+  
+  for (const address in utxos) {
+    const addressUtxos = utxos[address];
+    for (const utxo of addressUtxos) {
+      totalAmount += utxo.value;
+      const isReused = this.isReusedAddress(address);
+      if (isReused) {
+        reusedAmount += utxo.value;
+      }
+    }
+  }
+  
+  return reusedAmount / totalAmount;
+}
 ```
 
-### UTXO Management
+### Address Type Factor (ATF)
+Bitcoin has evolved to support multiple address types, each with different characteristics:
+- P2PKH: Legacy addresses (starting with "1")
+- P2SH: Script hash addresses (starting with "3")
+- P2WSH: Segregated witness script hash addresses (starting with "bc1q")
+- P2TR: Taproot addresses (starting with "bc1p")
+Mixing different address types can improve privacy by making your transactions harder to identify. The Address Type Factor measures this diversity:
+ATF = 1 / (number of same address types + 1)
+For example:
+If all your transactions use the same address type, ATF = 0.5
+If 3 outputs match the wallet's address type out of 10 total, ATF = 0.25
+The more diverse your address types, the higher your ATF (better privacy)
 
+### UTXO Spread Factor and UTXO Value Dispersion Factor
+These metrics evaluate how diverse your UTXO values are:
+
+![UTXO waste factor](../images/utxo%20spread%20fac.png)
+
+### UTXO Spread Factor (USF)
+The UTXO Spread Factor measures how diverse your UTXO values are:
+USF = σ / (σ + 1)
+Where σ (sigma) is the standard deviation of UTXO values.
+Low USF (near 0): UTXOs have very similar values (worse for privacy)
+High USF (near 1): UTXOs have diverse values (better for privacy)
+For example:
+A wallet with [0.1, 0.15, 0.1, 0.15, 0.2, 0.1] BTC UTXOs has a standard deviation of 0.04 → USF = 0.038 (Poor)
+A wallet with [0.1, 0.5, 0.02, 1.0, 5.0, 0.005] BTC UTXOs has a standard deviation of 1.77 → USF = 0.639 (Good)
+UTXO Mass Factor (UMF)
+The UTXO Mass Factor evaluates how many UTXOs you have:
+- 0-4 UTXOs: UMF = 1.0 (Not ideal)
+- 5-14 UTXOs: UMF = 0.75 (Good)
+- 15-24 UTXOs: UMF = 0.5 (Better)
+- 25-49 UTXOs: UMF = 0.25 (Very good)
+- 50+ UTXOs: UMF = 0 (Excellent)
+Having more UTXOs generally improves privacy by giving you more flexibility.
+UTXO Value Dispersion Factor (UVDF)
+This combines the Spread Factor and Mass Factor:
+UVDF = (USF + UMF) * 0.15 - 0.15
+UVDF ranges from -0.15 to 0.15, where:
+Negative values indicate poor UTXO distribution
+Positive values indicate good UTXO distribution
+Overall Wallet Privacy Score
+The getWalletPrivacyScore method combines all these factors to calculate an overall privacy score:
 ```typescript
-// Calculate dust limits for different address types
-const dustLimits = wasteMetrics.calculateDustLimits(
-  currentFeeRate,
-  'p2wsh',
-  { requiredSignerCount: 2, totalSignerCount: 3 }
-);
+getWalletPrivacyScore(walletAddressType: MultisigAddressType, network: Network): number {
+  const MTPS = this.getMeanTopologyScore();
+  const ARF = this.addressReuseFactor();
+  const ATF = this.addressTypeFactor(walletAddressType, network);
+  const UVDF = this.utxoValueDispersionFactor();
 
-console.log(`Lower Dust Limit: ${dustLimits.lowerLimit} sats`);
-console.log(`Upper Safe Limit: ${dustLimits.upperLimit} sats`);
+  const WPS = (MTPS * (1 - 0.5 * ARF) + 0.1 * (1 - ARF)) * (1 - ATF) + 0.1 * UVDF;
+  return WPS;
+}
 ```
+This formula gives:
+- More weight to transaction topology scores
+- Penalties for address reuse
+- Adjustments based on address type diversity
+- Small adjustments for UTXO distribution
+
+## Waste Metrics
+Now let's explore the WasteMetrics class, which focuses on fee efficiency and UTXO management:
+
+![Waste Metrices](../images/watse%20metrics.png)
+### What is Spend Waste Amount (S.W.A)?
+The Spend Waste Amount is a heuristic used in Bitcoin wallets to evaluate whether it's efficient to spend a UTXO now or wait. It helps decide:
+- Should I spend this UTXO now at today’s fee rate?
+- Or should I wait until later, when the fee rate might be lower?
+
 
 ## 📊 Metrics Explanation
 
@@ -102,6 +197,8 @@ console.log(`Upper Safe Limit: ${dustLimits.upperLimit} sats`);
 | Relative Fees Score (RFS) | Fee efficiency vs network | 0-1 | Higher |
 | Fees to Amount Ratio (FAR) | Fees as % of transaction value | 0-1 | Lower |
 | Weighted Waste Score | Combined fee efficiency rating | 0-1 | Higher |
+
+
 
 ## 📝 Usage Examples
 
