@@ -267,7 +267,7 @@ weightedWasteScore(history: FeeRatePercentile[]): number {
 
 ## 🔄 Metrics Component Lifecycle
 
-To extend or add new analysis modules in Caravan Health—whether privacy, waste, or entirely new dimensions—you’ll follow this consistent lifecycle:
+Understanding the complete lifecycle of a component is crucial for adding new elements:
 
 1. **Initialization**  
    - **Constructor** accepts raw data sources: transaction history, UTXO sets, fee‐rate percentiles, network parameters, etc.  
