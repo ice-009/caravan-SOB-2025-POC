@@ -37,10 +37,6 @@ The repo is organized to give a clear picture of both the research and the imple
   - Core Components and Features of the Wallet Health Dashboard
   - Key Implementations: Wallet Simulator, Health API, and UI Components
 
-- [**`suggestions/`**](./suggestions/README.md): Future features and ideas
-  - "Interactive Component Explorer" - Develop a visual tool that allows users to explore and understand how different wallet components work.
-  - A drag-and-drop Visual Component Creator!
-
 # How I Approached This
 
 The project was broken down into three key phases:
