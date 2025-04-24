@@ -17,37 +17,25 @@ Building intuitive dashboards that educate users on best practices in Bitcoin wa
 The result will be a more secure, informed, and user-friendly Caravan experience.
 
 # What You’ll Find in This Repository
-To give a clear path through both the conceptual deep-dives and the implementation work, the repo is organized as follows:
+The repo is organized to give a clear picture of both the research and the implementation process:
 
-docs/
-├── simulator-overview.md    # How the wallet-activity generator works under the hood
-├── health-api.md            # Deep dive into the @caravan/health analysis package
-└── coin-selection.md        # Background on UTXO models & coin-selection strategies
-Scripts
-scripts/
-├── generate-wallet.sh       # Docker/script to spin up a regtest/signet wallet with rich activity
-└── docker-compose.yml       # Regtest/Signet environment for testing
-User Interface
-ui/
-├── wireframes/              # Figma exports & static mockups of the dashboard designs
-└── prototypes/              # Lightweight HTML/CSS/JS demos of core UI interactions
-Source Code
-src/
-├── healthDashboard/         # React components for Privacy & Waste scoring UI
-├── transactionAnalysisPanel/ # Draft-transaction inspector (pre-sign analysis)
-└── utxoExplorer/            # D3.js-based UTXO treemap & clustering visualizer
-Images
-images/
-└── assets/                  # Diagrams, icon sketches, and sample screenshots
-Tests
-tests/
-├── unit/                    # Jest/Mocha tests for scripts and analysis logic
-└── integration/             # End-to-end tests for the dashboard UI
-Future Development
-suggestions/
-└── future-features.md       # Stretch goals (e.g. multi-wallet comparison, real-time mempool metrics)
-Main Documentation
-README.md                    # Project overview, setup instructions, and contribution guidelines
+- **`docs/`**: Technical deep dives
+
+  - [`simulator-overview.md`](./docs/simulator-overview.md): This document explains how the wallet-activity generator works under the hood, providing insights into the simulation of wallet activity.
+
+  - [`adding-elements.md`](./docs/implementation-details.md): Step-by-step guide to building new components
+
+- [**`images/`**](./images/): Diagrams and screenshots used in documentation
+
+- [**`implementations/`**](./implementations/README.md): Working prototypes
+
+  - Core Components and Features of the Wallet Health Dashboard
+  - Key Implementations: Wallet Simulator, Health API, and UI Components
+
+- [**`suggestions/`**](./suggestions/README.md): Future features and ideas
+  - "Interactive Component Explorer" - Develop a visual tool that allows users to explore and understand how different wallet components work.
+  - A drag-and-drop Visual Component Creator!
+
 
 
 # How I Approached This
@@ -64,7 +52,6 @@ The project was broken down into three key phases:
 
 - How to simulate and inspect wallet behavior using regtest/signet environments
 
-This exploration gave me a strong foundation in the UTXO model, fee percentile analysis, and the tradeoffs between privacy and waste in multisig wallets.
 
 ## 2. Building the Core Tools & Simulations
 - With that knowledge, I started building a development environment and initial tools:
@@ -77,7 +64,6 @@ This exploration gave me a strong foundation in the UTXO model, fee percentile a
 
 - UTXO Visualizer: A D3.js-based treemap for visualizing clustering, address reuse, and dust.
 
-These tools form the core framework for exposing wallet health insights directly in the Caravan interface.
 
 ## 3. Looking Ahead — Enhancement Ideas
 - Once the foundation was in place, I explored ideas to make Caravan more transparent and user-friendly for both technical and non-technical users:
@@ -90,7 +76,6 @@ These tools form the core framework for exposing wallet health insights directly
 
 - Modular Metrics Framework: Build a plug-in-ready system where contributors can add new analysis types (e.g., spending patterns, cluster detection) without touching core logic.
 
-These enhancements aim to make Caravan a powerful tool for both secure custody and user education in Bitcoin multisig wallet management.
 
 # What’s Next?
 
@@ -103,6 +88,5 @@ If selected, my plan is to:
 - Iterate on the UI/UX based on community feedback to make it approachable for non-technical users
 - Implement and release the dashboard incrementally to reduce review burden and ensure stable rollouts
 
-These improvements will help make **Caravan** a more educational, privacy-conscious, and user-friendly tool for Bitcoin multisig wallet coordination.
 
 
