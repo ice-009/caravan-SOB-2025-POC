@@ -8,23 +8,23 @@
 
 ### Features
 
-- Fee Health Tab
+- #### Fee Health Tab
 
 Displays fee scorecards, fee-rate history chart, and UTXO dust analysis.
 
-- Privacy Health Tab
+- #### Privacy Health Tab
 
 Privacy category breakdown (donut chart), address reuse, and stats.
 
-- UTXO Explorer Tab
+- #### UTXO Explorer Tab
 
 Treemap of UTXOs, privacy vs. waste scatter plot, balance overview.
 
-- Transaction Preview Panel
+- #### Transaction Preview Panel
 
 Evaluates unsigned PSBTs with privacy/waste feedback.
 
-- Reusable Components
+- #### Reusable Components
 
 Scorecards, breakdown panels, visual charts using D3/Recharts.
 
