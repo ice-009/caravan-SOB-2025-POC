@@ -54,41 +54,41 @@ README.md                    # Project overview, setup instructions, and contrib
 The project was broken down into three key phases:
 
 ## 1. Understanding Caravan Internals & Wallet Health Metrics
-I began with an in-depth study of the Caravan Coordinator and the @caravan/health library to understand:
+- I began with an in-depth study of the Caravan Coordinator and the @caravan/health library to understand:
 
-How Caravan handles multisig wallet creation and transaction signing
+- How Caravan handles multisig wallet creation and transaction signing
 
-How the WalletMetrics, PrivacyMetrics, and WasteMetrics classes are structured
+- How the WalletMetrics, PrivacyMetrics, and WasteMetrics classes are structured
 
-What types of privacy and fee-efficiency analyses are already supported
+- What types of privacy and fee-efficiency analyses are already supported
 
-How to simulate and inspect wallet behavior using regtest/signet environments
+- How to simulate and inspect wallet behavior using regtest/signet environments
 
 This exploration gave me a strong foundation in the UTXO model, fee percentile analysis, and the tradeoffs between privacy and waste in multisig wallets.
 
 ## 2. Building the Core Tools & Simulations
-With that knowledge, I started building a development environment and initial tools:
+- With that knowledge, I started building a development environment and initial tools:
 
-Wallet Activity Simulator: A script to generate a wallet with varied UTXO patterns using regtest/signet, useful for triggering different health scores.
+- Wallet Activity Simulator: A script to generate a wallet with varied UTXO patterns using regtest/signet, useful for triggering different health scores.
 
-Transaction Analysis Panel: UI component that evaluates draft transactions before signing, showing privacy and waste implications.
+- Transaction Analysis Panel: UI component that evaluates draft transactions before signing, showing privacy and waste implications.
 
-Health Dashboard UI: Prototype React components that surface insights from the metrics classes in real time.
+- Health Dashboard UI: Prototype React components that surface insights from the metrics classes in real time.
 
-UTXO Visualizer: A D3.js-based treemap for visualizing clustering, address reuse, and dust.
+- UTXO Visualizer: A D3.js-based treemap for visualizing clustering, address reuse, and dust.
 
 These tools form the core framework for exposing wallet health insights directly in the Caravan interface.
 
 ## 3. Looking Ahead — Enhancement Ideas
-Once the foundation was in place, I explored ideas to make Caravan more transparent and user-friendly for both technical and non-technical users:
+- Once the foundation was in place, I explored ideas to make Caravan more transparent and user-friendly for both technical and non-technical users:
 
-Health Scoring Summary: A scorecard with aggregate Privacy and Waste scores, backed by drill-down views.
+- Health Scoring Summary: A scorecard with aggregate Privacy and Waste scores, backed by drill-down views.
 
-Address & UTXO Explorer: An interactive view to understand address reuse, dust UTXOs, and script types at a glance.
+- Address & UTXO Explorer: An interactive view to understand address reuse, dust UTXOs, and script types at a glance.
 
-Transaction Topology Insight: Classify transactions in real-time (e.g., consolidation, CoinJoin-like, self-payments) and explain their privacy impact.
+- Transaction Topology Insight: Classify transactions in real-time (e.g., consolidation, CoinJoin-like, self-payments) and explain their privacy impact.
 
-Modular Metrics Framework: Build a plug-in-ready system where contributors can add new analysis types (e.g., spending patterns, cluster detection) without touching core logic.
+- Modular Metrics Framework: Build a plug-in-ready system where contributors can add new analysis types (e.g., spending patterns, cluster detection) without touching core logic.
 
 These enhancements aim to make Caravan a powerful tool for both secure custody and user education in Bitcoin multisig wallet management.
 
