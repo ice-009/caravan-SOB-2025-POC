@@ -21,7 +21,7 @@ The repo is organized to give a clear picture of both the research and the imple
 
 - **`docs/`**: Technical deep dives
 
-  - [`simulator-overview.md`](./docs/simulator-overview.md): This document explains how the wallet-activity generator works under the hood, providing insights into the simulation of wallet activity.
+  - [`overview.md`](./docs/overview.md): This document explains how the wallet-activity generator works under the hood, providing insights into the simulation of wallet activity.
 
   - [`adding-elements.md`](./docs/implementation-details.md): Step-by-step guide to building new components
 
