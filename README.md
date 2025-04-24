@@ -2,7 +2,7 @@
 
 # Project Overview
 
-[![](https://drive.google.com/file/d/1FZI3VuSZLyguZ8yUdDSR8BRILkkmGftK/view?usp=drive_link)](https://drive.google.com/file/d/1FZI3VuSZLyguZ8yUdDSR8BRILkkmGftK/view?usp=drive_link)
+[![](https://youtu.be/Iq7EDD-5UCE)](https://youtu.be/Iq7EDD-5UCE)
 This repository contains my proposal and initial plans to integrate a Wallet Health Dashboard into the Caravan multisig coordinator. The main objective is to empower users with tools to assess the health of their Bitcoin wallets—focusing on privacy and waste—using real-time analysis of transaction drafts and historical wallet activity. This will bridge the gap between existing backend analysis (via the @caravan/health package) and a clean, intuitive UI experience, making advanced wallet insights accessible to all Caravan users.
 
 # Why This Matters
