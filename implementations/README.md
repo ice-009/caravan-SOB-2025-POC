@@ -4,7 +4,7 @@ The **Wallet Health Dashboard** is a comprehensive analytical interface for Bitc
 
 ### 🚀 What This Project Implements
 
-This GSoC project contributes 5 major components to enhance wallet health transparency:
+This SoB project contributes 5 major components to enhance wallet health transparency:
 
 ---
 
